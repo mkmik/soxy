@@ -24,14 +24,15 @@ type CLI struct {
 }
 
 func (cmd *CLI) Run(cli *Context) error {
+	// Parse the target URL
+	targetURL, err := url.Parse(cmd.To)
+	if err != nil {
+		return err
+	}
+
 	// Create a reverse proxy
 	proxy := &httputil.ReverseProxy{
 		Director: func(req *http.Request) {
-			targetURL, err := url.Parse(cmd.To)
-			if err != nil {
-				// Handle error appropriately
-				return
-			}
 			req.URL.Scheme = targetURL.Scheme
 			req.URL.Host = targetURL.Host
 		},
