@@ -14,10 +14,15 @@ type Context struct {
 }
 
 type CLI struct {
+	From string `name:"from" required:"" help:"Source address to proxy from"`
+	To   string `name:"to" required:"" help:"Destination address to proxy to"`
+
 	Version kong.VersionFlag `name:"version" help:"Print version information and quit"`
 }
 
 func (cmd *CLI) Run(cli *Context) error {
+	// TODO: insert reverse proxy logic
+
 	return nil
 }
 
