@@ -40,6 +40,7 @@ func (cmd *CLI) Run(cli *Context) error {
 			req.URL.Host = targetURL.Host
 			if cmd.ChangeHostHeader {
 				req.Host = targetURL.Host
+				req.Host = targetURL.Host
 			}
 		},
 	}
