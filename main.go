@@ -19,8 +19,9 @@ type Context struct {
 }
 
 type CLI struct {
-	From string `name:"from" required:"" help:"Source address to proxy from"`
-	To   string `name:"to" required:"" help:"Destination address to proxy to"`
+	From             string `name:"from" required:"" help:"Source address to proxy from"`
+	To               string `name:"to" required:"" help:"Destination address to proxy to"`
+	ChangeHostHeader bool   `name:"change-host-header" help:"Change the Host header to the target host"`
 
 	Version kong.VersionFlag `name:"version" help:"Print version information and quit"`
 }
@@ -37,6 +38,9 @@ func (cmd *CLI) Run(cli *Context) error {
 		Director: func(req *http.Request) {
 			req.URL.Scheme = targetURL.Scheme
 			req.URL.Host = targetURL.Host
+			if cmd.ChangeHostHeader {
+				req.Host = targetURL.Host
+			}
 		},
 	}
 
