@@ -1,4 +1,4 @@
-module github.com/mkmik/soxy
+module mkm.pub/soxy
 
 go 1.23.5
 
