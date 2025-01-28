@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+	"net/http/httputil"
 	"runtime/debug"
 
 	"github.com/alecthomas/kong"
@@ -21,9 +23,20 @@ type CLI struct {
 }
 
 func (cmd *CLI) Run(cli *Context) error {
-	// TODO: insert reverse proxy logic
+	// Create a reverse proxy
+	proxy := &httputil.ReverseProxy{
+		Director: func(req *http.Request) {
+			req.URL.Scheme = "http"
+			req.URL.Host = cmd.To
+		},
+	}
 
-	return nil
+	// Start the HTTP server
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		proxy.ServeHTTP(w, r)
+	})
+
+	return http.ListenAndServe(cmd.From, nil)
 }
 
 func getVersion() string {
