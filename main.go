@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"net/http/httputil"
+	"net/url"
 	"runtime/debug"
 
 	"github.com/alecthomas/kong"
@@ -26,8 +27,13 @@ func (cmd *CLI) Run(cli *Context) error {
 	// Create a reverse proxy
 	proxy := &httputil.ReverseProxy{
 		Director: func(req *http.Request) {
-			req.URL.Scheme = "http"
-			req.URL.Host = cmd.To
+			targetURL, err := url.Parse(cmd.To)
+			if err != nil {
+				// Handle error appropriately
+				return
+			}
+			req.URL.Scheme = targetURL.Scheme
+			req.URL.Host = targetURL.Host
 		},
 	}
 
