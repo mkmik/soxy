@@ -18,17 +18,21 @@ type Context struct {
 	*CLI
 }
 
-type CLI struct {
+type ReverseProxy struct {
 	From             string `name:"from" required:"" help:"Source address to proxy from"`
 	To               string `name:"to" required:"" help:"Destination address to proxy to"`
 	ChangeHostHeader bool   `name:"change-host-header" help:"Change the Host header to the target host"`
+}
+
+type CLI struct {
+	ReverseProxy ReverseProxy `cmd:"" help:"Run the reverse proxy"`
 
 	Version kong.VersionFlag `name:"version" help:"Print version information and quit"`
 }
 
-func (cmd *CLI) Run(cli *Context) error {
+func (cmd *ReverseProxy) Run(cli *Context) error {
 	// Parse the target URL
-	targetURL, err := url.Parse(cmd.To)
+	targetURL, err := url.Parse(cli.ReverseProxy.To)
 	if err != nil {
 		return err
 	}
@@ -40,7 +44,6 @@ func (cmd *CLI) Run(cli *Context) error {
 			req.URL.Host = targetURL.Host
 			if cmd.ChangeHostHeader {
 				req.Host = targetURL.Host
-				req.Host = targetURL.Host
 			}
 		},
 	}
@@ -50,7 +53,7 @@ func (cmd *CLI) Run(cli *Context) error {
 		proxy.ServeHTTP(w, r)
 	})
 
-	return http.ListenAndServe(cmd.From, nil)
+	return http.ListenAndServe(cli.ReverseProxy.From, nil)
 }
 
 func getVersion() string {
