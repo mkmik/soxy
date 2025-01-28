@@ -1,3 +1,5 @@
+// The soxy command is a simple-stupid reverse proxy that uses Go's standard http library
+// which supports out of the box using HTTP and SOCKS proxies towards the upstream.
 package main
 
 import (
@@ -59,7 +61,7 @@ func getVersion() string {
 func main() {
 	var cli CLI
 	ctx := kong.Parse(&cli,
-		kong.Description(`Simple reverse proxy with CLI configuration.`),
+		kong.Description(`Simple reverse proxy with CLI configuration. Supports using a proxy for the upstream with the HTTPS_PROXY=socks5://host:port env var`),
 		kong.UsageOnError(),
 		kong.Vars{
 			"version": getVersion(),
